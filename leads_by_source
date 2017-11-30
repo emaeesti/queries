@@ -1,0 +1,27 @@
+use traffic_control_views;
+SELECT count(lead.id), 
+CASE 
+	WHEN gclid is not NULL and provider_id in ('38','34','10') then 'PPC Adwords'
+    WHEN affiliate like '%Credy, bing%' and enable_conversions = '1' then 'PPC + Other sources Bing'
+    WHEN affiliate is NULL AND gclid is NULL and provider_id in ('38','34','10') then 'direct'
+    WHEN affiliate like '%sms%' then 'SMS'
+    WHEN affiliate not like '%sms%' and affiliate is not NULL and provider_id in ('38','34','10') then 'affiliate'
+    ELSE 'provider'
+    END as grp
+ FROM lender_lead_sent
+JOIN lender ON lender_id = lender.id
+JOIN lead ON lead_id = lead.id
+
+
+WHERE date_created BETWEEN '2017-11-01' AND '2017-12-01'
+AND country_id = '5'
+AND status = 'accepted'
+group by
+CASE 
+	WHEN gclid is not NULL and provider_id in ('38','34','10') then 'PPC Adwords'
+      WHEN affiliate like '%Credy, bing%' and enable_conversions = '1' then 'PPC + Other sources Bing'
+    WHEN affiliate is NULL AND gclid is NULL and provider_id in ('38','34','10') then 'direct'
+    WHEN affiliate like '%sms%' then 'SMS'
+    WHEN affiliate not like '%sms%' and affiliate is not NULL and provider_id in ('38','34','10') then 'affiliate'
+    ELSE 'provider'
+    END
