@@ -1,0 +1,12 @@
+use traffic_control_views;
+SELECT lender.name Lender, count(*) FROM lender_lead_sent
+JOIN lender ON lender_id = lender.id
+JOIN lead ON lead_id = lead.id
+JOIN lead_meta ON lead_meta.lead_id = lead.id
+
+WHERE date_created BETWEEN '2017-11-28 22:00:00' AND '2017-11-29 22:00:00'
+AND provider_id = '38'
+AND lead.gclid IS NOT NULL
+AND ga_client_id is not null
+AND status = 'accepted'
+GROUP BY lender.name
