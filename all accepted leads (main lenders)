@@ -1,0 +1,13 @@
+SELECT lead.id FROM lead
+JOIN lender_lead_sent ON lead_id = lead.id
+JOIN lender ON lender_id = lender.id
+LEFT JOIN lead_meta ON lead_meta.lead_id =lead.id
+
+WHERE date_created BETWEEN '2017-11-29 22:00:00' AND '2017-11-30 22:00:00'
+AND lead.gclid IS NOT NULL
+AND provider_id = '10'
+AND queue = 'main'
+AND lender.enable_conversions='1'
+AND status = 'accepted'
+GROUP BY lead.gclid
+;
