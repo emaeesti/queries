@@ -1,0 +1,24 @@
+SELECT date, grp, leads
+from
+(SELECT  count(*) as leads, CAST(date_created as DATE) as DATE,
+CASE 
+    WHEN active = '1' AND lead_client_interaction.lender_id = '113' THEN 'didnt introduce code'
+    WHEN active is NULL and lender_lead_sent.status = 'accepted' AND lead_client_interaction.lender_id = '113' AND lender_lead_sent.lender_id = '114' THEN 'introduced correct code'
+    WHEN active is NULL and lender_lead_sent.status = 'validation_error' AND lead_client_interaction.lender_id = '113' AND lender_lead_sent.lender_id = '114' THEN 'introduced wrong code'
+    WHEN lender_lead_sent.lender_id = 113 and status = 'validation_error' THEN 'already verified'
+END as grp FROM lead
+LEFT JOIN lead_client_interaction ON lead_client_interaction.lead_id = lead.id
+LEFT JOIN lender_lead_sent ON lender_lead_sent.lead_id = lead.id
+WHERE date_created BETWEEN '2017-12-03' AND '2017-12-05'
+ group by
+ CAST(date_created as DATE),
+CASE 
+    WHEN active = '1' AND lead_client_interaction.lender_id = '113' THEN 'didnt introduce code'
+    WHEN active is NULL and lender_lead_sent.status = 'accepted' AND lead_client_interaction.lender_id = '113' AND lender_lead_sent.lender_id = '114' THEN 'introduced correct code'
+    WHEN active is NULL and lender_lead_sent.status = 'validation_error' AND lead_client_interaction.lender_id = '113' AND lender_lead_sent.lender_id = '114' THEN 'introduced wrong code'
+    WHEN lender_lead_sent.lender_id = 113 and status = 'validation_error' THEN 'already verified'
+END) as t
+where grp is not NULL
+group by grp, date 
+order by date
+ 
